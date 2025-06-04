@@ -1,0 +1,20 @@
+/* src/styles/homePage.css */
+.homePage {
+    font-family: Arial, sans-serif;
+  }
+  
+  .homePage__content {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .homePage__content h2 {
+    font-size: 36px;
+    color: #333;
+  }
+  
+  .homePage__content p {
+    font-size: 18px;
+    color: #666;
+  }
+  
