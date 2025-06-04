@@ -17,7 +17,7 @@ const categories = [
 const Pcategory = () => {
   return (
     <section className="w-full py-10 px-4 bg-gradient-to-br from-blue-100 to-purple-100">
-      <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Welcome to Smile Store</h2>
+      <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Welcom to Smile Store</h2>
 
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 max-w-6xl mx-auto">
         {categories.map((cat, index) => (
