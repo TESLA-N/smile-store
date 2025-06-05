@@ -89,9 +89,13 @@ const ProductView = () => {
 
           {/* Buttons */}
           <div className="mt-8 flex gap-4 flex-wrap">
-            <button className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800">
-              Add to Cart
-            </button>
+            <button
+  // onClick={handleAddToCart}
+  className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800"
+>
+  Add to Cart
+</button>
+
             <button className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">
               Order Now
             </button>

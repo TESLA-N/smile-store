@@ -9,6 +9,7 @@ import Sidebar from "./sidebar";
 import AuthModal from "./AuthModal";
 // import Product from "../../backend/models/productModel";
 import ProductList from "./ProductList";
+import CartPage from "./Cart";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -73,7 +74,7 @@ function Navbar() {
   };
 
   const handleKeyPress = (e) => e.key === "Enter" && handleSearch();
-  const handleCartClick = () => navigate("/cart");
+  const handleCartClick = () => navigate("/CartPage");
   const handleAddressClick = () => navigate("/api/address");
   const toggleSidebar = () => setIsSidebarVisible(!isSidebarVisible);
 
@@ -127,17 +128,42 @@ function Navbar() {
         </div>
 
         <div className="relative flex items-center flex-grow max-w-2xl mx-4">
-          <select
+          {/* <select
             className="bg-gray-700 text-white p-2 hover:bg-black rounded-l-lg h-full appearance-none pr-8"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           >
             <option>All</option>
+            <option>Clothing</option>
             <option>Electronics</option>
-            <option>Fashion</option>
-            <option>Home</option>
-            <option>Books</option>
-          </select>
+            <option>Footwear</option>
+            <option>Furniture</option>
+            <option>Beauty</option>
+            <option>Sports</option>
+            <option>Groceries</option>
+            <option>Accessories</option>
+          </select> */}
+          <div className="relative inline-block">
+  <select
+    className="bg-gray-700 text-white p-2 hover:bg-black rounded-l-lg h-full appearance-none pr-8"
+    value={category}
+    onChange={(e) => setCategory(e.target.value)}
+  >
+    <option>All</option>
+    <option>Clothing</option>
+    <option>Electronics</option>
+    <option>Footwear</option>
+    <option>Furniture</option>
+    <option>Beauty</option>
+    <option>Sports</option>
+    <option>Groceries</option>
+    <option>Accessories</option>
+  </select>
+  <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-white">
+    ▼
+  </div>
+</div>
+
 
           <div className="relative w-full">
             <input
@@ -177,12 +203,19 @@ function Navbar() {
 
         {user ? (
           <div className="relative profile-menu">
-            <Avatar
+            {/* <Avatar
               alt={user.name}
               src={user.profilePic || "/default-avatar.png"}
               className="ml-4 cursor-pointer"
               onClick={() => setShowProfileMenu(!showProfileMenu)}
-            />
+            /> */}
+            <img
+  src={user.profilePic || "/default-avatar.png"}
+  alt={user.name}
+  className="w-10 h-10 rounded-full ml-4 cursor-pointer"
+  onClick={() => setShowProfileMenu(!showProfileMenu)}
+/>
+
             {showProfileMenu && (
               <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-50">
                 <button
@@ -232,7 +265,7 @@ function Navbar() {
           </button>
 
           <Link to="/">
-            <img src="/smilestorelogo.png" alt="Logo" className="h-6" />
+            <img src="/smilestorelogo.png" alt="Logo" className="h-12" />
           </Link>
 
           <div className="flex items-center space-x-2">

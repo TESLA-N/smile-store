@@ -6,11 +6,11 @@ const categories = [
     { name: 'Clothing', image: '/assets/images/image.png' },
  { name: 'Footwear', image: '/assets/images/footwear.png' },
   { name: 'Electronics', image: '/assets/images/Ele.png' },
-  { name: 'Home Decor', image: '/assets/images/HD.png' },
+  { name: 'Furniture', image: '/assets/images/HD.png' },
   { name: 'Beauty', image: '/assets/images/BT.png' },
   { name: 'Accessories', image:'/assets/images/A.png' },
   { name: 'Sports', image: '/assets/images/Sp.png' },
-  { name: 'Books', image: '/assets/images/Books.png' },
+  { name: 'Groceries', image: '/assets/images/Gr.png' },
 //   { name: 'Toys', image: 'https://via.placeholder.com/300x200?text=Toys' },
 ];
 

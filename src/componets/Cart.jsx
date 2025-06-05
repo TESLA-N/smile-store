@@ -1,95 +1,119 @@
-import React, { useState } from "react";
-import { Trash2 } from "lucide-react"; // Importing delete bin icon
+import React, { useEffect, useState } from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import { useNavigate } from 'react-router-dom';
 
-const Cart = () => {
-  const [cartItems, setCartItems] = useState([
-    { id: 1, name: "Product 1", price: 500, quantity: 1, image: "https://via.placeholder.com/100" },
-    { id: 2, name: "Product 2", price: 700, quantity: 2, image: "https://via.placeholder.com/100" },
-  ]);
+const CartPage = () => {
+  const [cartItems, setCartItems] = useState([]);
+  const navigate = useNavigate();
 
-  // Update quantity
-  const updateQuantity = (id, amount) => {
-    setCartItems(cartItems.map(item => 
-      item.id === id ? { ...item, quantity: Math.max(1, item.quantity + amount) } : item
-    ));
+  const fetchCart = async () => {
+    try {
+      const res = await fetch('http://localhost:4000/api/cart', {
+        credentials: 'include', // if using cookies for auth
+      });
+      const data = await res.json();
+      setCartItems(data.cartItems || []);
+    } catch (error) {
+      console.error('Failed to fetch cart:', error);
+    }
   };
 
-  // Remove item
-  const removeItem = (id) => {
-    setCartItems(cartItems.filter(item => item.id !== id));
+  const handleQuantity = async (productId, type) => {
+    try {
+      await fetch(`http://localhost:4000/api/cart/${type}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ productId }),
+      });
+      fetchCart();
+    } catch (error) {
+      console.error(`Failed to ${type} quantity:`, error);
+    }
   };
 
-  // Calculate total price
-  const totalPrice = cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
+  const handleRemove = async (productId) => {
+    try {
+      await fetch(`http://localhost:4000/api/cart/remove`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ productId }),
+      });
+      fetchCart();
+    } catch (error) {
+      console.error('Failed to remove item:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
 
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Shopping Cart 🛒</h2>
+    <section className="px-4 py-8 bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen">
+      <div className="max-w-6xl mx-auto">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Your Cart</h2>
 
-      {cartItems.length === 0 ? (
-        <p className="text-gray-500 text-lg">Your cart is empty.</p>
-      ) : (
-        <div className="bg-white shadow-md rounded-lg p-4">
-          {cartItems.map(item => (
-            <div key={item.id} className="flex flex-col sm:flex-row items-center justify-between border-b py-4">
-              {/* Product Image */}
-              <div className="flex flex-col items-center sm:flex-row sm:space-x-4">
-                <img src={item.image} alt={item.name} className="w-16 h-16 rounded-md" />
-                <p className="font-semibold text-center sm:text-left">{item.name}</p>
-              </div>
-
-              {/* Price */}
-              <p className="text-gray-700 hidden sm:block">₹{item.price}</p>
-
-              {/* Quantity Controls */}
-              <div className="flex flex-col items-center sm:flex-row sm:space-x-2 mt-2 sm:mt-0">
-                {item.quantity === 1 ? (
-                  <button 
-                    className="p-2 bg-red-500 text-white rounded-md hover:bg-red-600"
-                    onClick={() => removeItem(item.id)}
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                ) : (
-                  <button 
-                    className="px-3 bg-gray-200 rounded-md" 
-                    onClick={() => updateQuantity(item.id, -1)}
-                  >-</button>
-                )}
-                
-                <span className="px-3">{item.quantity}</span>
-
-                <button 
-                  className="px-3 bg-gray-200 rounded-md" 
-                  onClick={() => updateQuantity(item.id, 1)}
-                >+</button>
-              </div>
-
-              {/* Price (for mobile) */}
-              <p className="text-gray-700 sm:hidden mt-2">₹{item.price}</p>
-
-              {/* Delete Button */}
-              <button 
-                className="text-red-500 hover:text-red-700 font-bold hidden sm:block"
-                onClick={() => removeItem(item.id)}
+        {cartItems.length === 0 ? (
+          <p className="text-center text-gray-600 text-lg">Your cart is empty.</p>
+        ) : (
+          <div className="flex flex-col gap-6">
+            {cartItems.map((item) => (
+              <div
+                key={item._id}
+                className="flex flex-col sm:flex-row bg-white rounded-xl shadow-md overflow-hidden w-full h-auto sm:h-[180px] lg:h-[150px]"
               >
-                <Trash2 className="w-6 h-6" />
-              </button>
-            </div>
-          ))}
+                {/* Image Section */}
+                <div className="w-full sm:w-1/3 h-[200px] sm:h-full flex items-center justify-center bg-white">
+                  <img
+                    src={item.product.thumbnail}
+                    alt={item.product.title}
+                    className="w-[90%] h-[90%] object-contain"
+                  />
+                </div>
 
-          <div className="flex justify-between mt-4 font-bold text-lg">
-            <p>Total:</p>
-            <p>₹{totalPrice}</p>
+                {/* Content Section */}
+                <div className="flex flex-col justify-between p-4 w-full sm:w-2/3">
+                  <div>
+                    <h3 className="text-lg font-bold text-gray-800 truncate">
+                      {item.product.title}
+                    </h3>
+                    <p className="text-sm text-gray-700 mt-1 line-clamp-2">
+                      {item.product.description || 'No description available'}
+                    </p>
+                  </div>
+
+                  <div className="flex justify-between items-center pt-2">
+                    <span className="text-green-700 font-semibold">${item.product.price}</span>
+
+                    <div className="flex items-center gap-2">
+                      <RemoveIcon
+                        className="cursor-pointer text-red-500 hover:text-red-600"
+                        onClick={() => handleQuantity(item.product._id, 'decrease')}
+                      />
+                      <span className="font-medium">{item.quantity}</span>
+                      <AddIcon
+                        className="cursor-pointer text-green-600 hover:text-green-700"
+                        onClick={() => handleQuantity(item.product._id, 'increase')}
+                      />
+                    </div>
+
+                    <DeleteIcon
+                      className="cursor-pointer text-gray-600 hover:text-black"
+                      onClick={() => handleRemove(item.product._id)}
+                    />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-          
-          <button className="w-full bg-blue-500 text-white py-2 mt-4 rounded-md hover:bg-blue-600">
-            Proceed to Checkout
-          </button>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </section>
   );
 };
 
-export default Cart;
+export default CartPage;
