@@ -19,6 +19,9 @@ app.use(cors());
 app.use(express.json());
 
 // Use routes
+app.get("/",(req, res)=>{
+    res.send("working");
+});
 app.use("/api/users", userRoutes);
 // app.use("/api/products", productRouter);
 app.use("/api/cart", cartrouter);
