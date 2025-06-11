@@ -7,11 +7,15 @@ import { useNavigate } from 'react-router-dom';
 const CartPage = () => {
   const [cartItems, setCartItems] = useState([]);
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   const fetchCart = async () => {
     try {
       const res = await fetch('http://localhost:4000/api/cart', {
-        credentials: 'include', // if using cookies for auth
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
       });
       const data = await res.json();
       setCartItems(data.cartItems || []);
@@ -24,8 +28,10 @@ const CartPage = () => {
     try {
       await fetch(`http://localhost:4000/api/cart/${type}`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ productId }),
       });
       fetchCart();
@@ -38,8 +44,10 @@ const CartPage = () => {
     try {
       await fetch(`http://localhost:4000/api/cart/remove`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({ productId }),
       });
       fetchCart();
@@ -49,8 +57,13 @@ const CartPage = () => {
   };
 
   useEffect(() => {
+    if (!token) {
+      alert("Please login to view your cart.");
+      navigate("/login");
+      return;
+    }
     fetchCart();
-  }, []);
+  }, [navigate, token]);
 
   return (
     <section className="px-4 py-8 bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen">

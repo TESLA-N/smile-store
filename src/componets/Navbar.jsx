@@ -1,3 +1,4 @@
+// Navbar.jsx
 import React, { useState, useEffect } from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -7,7 +8,6 @@ import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import Sidebar from "./sidebar";
 import AuthModal from "./AuthModal";
-// import Product from "../../backend/models/productModel";
 import ProductList from "./ProductList";
 import CartPage from "./Cart";
 
@@ -18,7 +18,6 @@ function Navbar() {
   const [suggestions, setSuggestions] = useState([]);
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [user, setUser] = useState(null);
-
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState("login");
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -28,28 +27,20 @@ function Navbar() {
   }, [isSidebarVisible]);
 
   useEffect(() => {
-  const fetchProfile = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
-      // console.log("Fetching user profile with token...");
-      const { data } = await axios.get("http://localhost:4000/api/users/profile", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      console.log("User profile fetched:", data);
-      setUser(data);
-    } catch (err) {
-      console.log("Not logged in:", err.response?.status);
-      setUser(null);
-    }
-  };
-
-  fetchProfile();
-}, []);
-
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        const { data } = await axios.get("http://localhost:4000/api/users/profile", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setUser(data);
+      } catch (err) {
+        setUser(null);
+      }
+    };
+    fetchProfile();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -68,7 +59,8 @@ function Navbar() {
       navigate("/products");
     }
   };
- const dummyAddresses = [
+
+  const dummyAddresses = [
     { id: 1, line: "1234 Main Street, Delhi" },
     { id: 2, line: "5678 MG Road, Bangalore" },
     { id: 3, line: "9101 Park Avenue, Mumbai" },
@@ -84,23 +76,9 @@ function Navbar() {
     setEditedAddress(selected.line);
   };
 
-  const handleInputChange = (e) => {
-    setEditedAddress(e.target.value);
-  };
-
-  const handleLogout = async () => {
-    try {
-      await axios.post("http://localhost:4000/api/users/logout", {} );
-      setUser(null);
-      setShowProfileMenu(false);
-      navigate("/");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
-
+  const handleInputChange = (e) => setEditedAddress(e.target.value);
   const handleKeyPress = (e) => e.key === "Enter" && handleSearch();
-  const handleCartClick = () => navigate("/CartPage");
+  const handleCartClick = () => navigate("/cart");
   const handleAddressClick = () => navigate("/api/address");
   const toggleSidebar = () => setIsSidebarVisible(!isSidebarVisible);
 
@@ -118,89 +96,72 @@ function Navbar() {
     handleSearch();
   };
 
-  // Function to refresh user data after login/signup
-const refreshUser = async () => {
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+  const refreshUser = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+      const { data } = await axios.get("http://localhost:4000/api/users/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(data);
+    } catch (err) {
+      setUser(null);
+    }
+  };
 
-    console.log("Refreshing user profile...");
-    const { data } = await axios.get("http://localhost:4000/api/users/profile", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    console.log("User profile refreshed:", data);
-    setUser(data);
-  } catch (err) {
-    console.log("Failed to refresh user profile:", err);
-    setUser(null);
-  }
-};
-
+  const handleLogout = async () => {
+    try {
+      await axios.post("http://localhost:4000/api/users/logout", {});
+      localStorage.removeItem("token"); // ✅ important fix
+      setUser(null);
+      setShowProfileMenu(false);
+      navigate("/");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
     <div className="bg-gray-800 text-white shadow-lg">
       {/* Desktop Navbar */}
       <div className="hidden md:flex items-center justify-between px-4 py-3">
         <Link to="/">
-          <img
-            src="/smilestorelogo.png"
-            alt="SmileStore"
-            className="w-24 h-auto cursor-pointer transition-all hover:outline hover:outline-2 hover:outline-white"
-          />
+          <img src="/smilestorelogo.png" alt="SmileStore" className="w-24 h-auto cursor-pointer hover:outline hover:outline-2 hover:outline-white" />
         </Link>
 
-         <div className="flex flex-col text-sm cursor-pointer space-y-1">
-      <div className="flex items-center text-sm">
-        <img
-          src="/icons8-location-50.png"
-          alt="Location"
-          className="w-6 h-6 mr-1"
-        />
-        <span className="font-semibold">Deliver to</span>
-      </div>
+        {/* Location and Address */}
+        <div className="flex flex-col text-sm cursor-pointer space-y-1">
+          <div className="flex items-center text-sm">
+            <img src="/icons8-location-50.png" alt="Location" className="w-6 h-6 mr-1" />
+            <span className="font-semibold">Deliver to</span>
+          </div>
+          <select className="border rounded px-2 py-1 text-black" value={selectedAddressId} onChange={handleAddressChange}>
+            {dummyAddresses.map((addr) => (
+              <option key={addr.id} value={addr.id}>{addr.line}</option>
+            ))}
+          </select>
+        </div>
 
-      {/* Dropdown Selector */}
-      <select
-        className="border rounded px-2 py-1 text-black"
-        value={selectedAddressId}
-        onChange={handleAddressChange}
-      >
-        {dummyAddresses.map((addr) => (
-          <option key={addr.id} value={addr.id}>
-            {addr.line}
-          </option>
-        ))}
-      </select>
-
-      {/* Editable Input Field */}
-      
-    </div>
-
+        {/* Search */}
         <div className="relative flex items-center flex-grow max-w-2xl mx-4">
-          
           <div className="relative inline-block">
-  <select
-    className="bg-gray-700 text-white p-2 hover:bg-black rounded-l-lg h-full appearance-none pr-8"
-    value={category}
-    onChange={(e) => setCategory(e.target.value)}
-  >
-    <option>All</option>
-    <option>Clothing</option>
-    <option>Electronics</option>
-    <option>Footwear</option>
-    <option>Furniture</option>
-    <option>Beauty</option>
-    <option>Sports</option>
-    <option>Groceries</option>
-    <option>Accessories</option>
-  </select>
-  <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-white">
-    ▼
-  </div>
-</div>
-
+            <select
+              className="bg-gray-700 text-white p-2 hover:bg-black rounded-l-lg h-full appearance-none pr-8"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
+              <option>All</option>
+              <option>Clothing</option>
+              <option>Electronics</option>
+              <option>Footwear</option>
+              <option>Furniture</option>
+              <option>Beauty</option>
+              <option>Sports</option>
+              <option>Groceries</option>
+              <option>Accessories</option>
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-2 flex items-center text-white">▼</div>
+          </div>
 
           <div className="relative w-full">
             <input
@@ -214,11 +175,7 @@ const refreshUser = async () => {
             {suggestions.length > 0 && (
               <ul className="absolute left-0 right-0 bg-white border mt-1 max-h-60 overflow-y-auto z-50 rounded shadow-lg text-black">
                 {suggestions.map((product) => (
-                  <li
-                    key={product._id}
-                    className="p-2 cursor-pointer hover:bg-gray-200"
-                    onClick={() => handleSuggestionClick(product)}
-                  >
+                  <li key={product._id} className="p-2 cursor-pointer hover:bg-gray-200" onClick={() => handleSuggestionClick(product)}>
                     {product.name}
                   </li>
                 ))}
@@ -226,67 +183,46 @@ const refreshUser = async () => {
             )}
           </div>
 
-          <button
-            onClick={handleSearch}
-            className="bg-blue-500 p-2 rounded-r-lg hover:bg-blue-600"
-          >
+          <button onClick={handleSearch} className="bg-blue-500 p-2 rounded-r-lg hover:bg-blue-600">
             <SearchIcon className="text-white" />
           </button>
         </div>
 
+        {/* Cart and Profile */}
         <button onClick={handleCartClick} className="bg-gray-700 p-2 rounded-lg">
           <ShoppingCartIcon className="text-white" />
         </button>
 
-       {user ? (
-  <div className="relative">
-    <img
-      src={user.profilePic || "/default-avatar.png"}
-      alt={user.name}
-      className="w-10 h-10 rounded-full ml-4 cursor-pointer border border-white"
-      onClick={() => setShowProfileMenu(!showProfileMenu)}
-    />
-
-    {showProfileMenu && (
-      <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-50">
-        <button
-          onClick={() => {
-            setShowProfileMenu(false);
-            navigate("/profile/edit");
-          }}
-          className="w-full text-left px-4 py-2 hover:bg-gray-100"
-        >
-          ✏️ Edit Profile
-        </button>
-        <button
-          onClick={() => {
-            setShowProfileMenu(false);
-            navigate("/wishlist");
-          }}
-          className="w-full text-left px-4 py-2 hover:bg-gray-100"
-        >
-          ❤️ Wishlist
-        </button>
-        <button
-          onClick={handleLogout}
-          className="w-full text-left px-4 py-2 hover:bg-gray-100"
-        >
-          🚪 Logout
-        </button>
-      </div>
-    )}
-  </div>
-) : (
-  <button
-    onClick={handleLoginClick}
-    className="bg-blue-500 p-2 rounded-md hover:bg-blue-600 ml-4 text-white"
-  >
-    Login
-  </button>
-)}
-
+        {user ? (
+          <div className="relative profile-menu">
+            <img
+              src={user.profilePic || "/default-avatar.png"}
+              alt={user.name}
+              className="w-10 h-10 rounded-full ml-4 cursor-pointer border border-white"
+              onClick={() => setShowProfileMenu(!showProfileMenu)}
+            />
+            {showProfileMenu && (
+              <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-50 profile-menu">
+                <button onClick={() => { setShowProfileMenu(false); navigate("/profile/edit"); }} className="w-full text-left px-4 py-2 hover:bg-gray-100">
+                  ✏️ Edit Profile
+                </button>
+                <button onClick={() => { setShowProfileMenu(false); navigate("/wishlist"); }} className="w-full text-left px-4 py-2 hover:bg-gray-100">
+                  ❤️ Wishlist
+                </button>
+                <button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-gray-100">
+                  🚪 Logout
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          <button onClick={handleLoginClick} className="bg-blue-500 p-2 rounded-md hover:bg-blue-600 ml-4 text-white">
+            Login
+          </button>
+        )}
       </div>
 
+      {/* Mobile Navbar (unchanged, working) */}
       {/* Mobile Navbar */}
       <div className="md:hidden px-4 py-3 flex flex-col space-y-2">
         <div className="flex justify-between items-center">
@@ -369,30 +305,23 @@ const refreshUser = async () => {
           </button>
         </div>
       </div>
-
-      {/* Sidebar Overlay */}
+      {/* Sidebar and AuthModal */}
       {isSidebarVisible && (
         <div className="fixed inset-0 flex z-50">
           <div className="fixed inset-0 bg-black bg-opacity-50" onClick={toggleSidebar}></div>
           <div className="relative w-72 h-screen bg-gray-800 shadow-lg z-50">
             <Sidebar />
-            <button
-              onClick={toggleSidebar}
-              className="absolute top-4 right-4 text-white text-2xl"
-            >
-              ✖
-            </button>
+            <button onClick={toggleSidebar} className="absolute top-4 right-4 text-white text-2xl">✖</button>
           </div>
         </div>
       )}
 
-      {/* Auth Modal */}
       {isAuthOpen && (
         <AuthModal
           mode={authMode}
           onClose={handleCloseAuth}
           onSwitch={handleSwitchAuth}
-          refreshUser={refreshUser}
+          refreshUser={refreshUser} // ✅ ensures profile shows after login
         />
       )}
     </div>

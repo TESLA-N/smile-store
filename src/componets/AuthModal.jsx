@@ -6,12 +6,17 @@ const AuthModal = ({ onClose, refreshUser }) => {
   const [isLogin, setIsLogin] = useState(true);
 
   useEffect(() => {
-    // Lock background scroll when modal opens
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = "auto";
     };
   }, []);
+
+  // ✅ Call refreshUser and close modal
+  const handleSuccess = () => {
+    refreshUser(); // updates navbar/profile picture
+    onClose();     // closes modal
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
@@ -20,13 +25,13 @@ const AuthModal = ({ onClose, refreshUser }) => {
           <LoginTab
             onClose={onClose}
             onSwitch={() => setIsLogin(false)}
-            refreshUser={refreshUser}
+            onSuccess={handleSuccess}
           />
         ) : (
           <SignInTab
             onClose={onClose}
             onSwitch={() => setIsLogin(true)}
-            refreshUser={refreshUser}
+            onSuccess={handleSuccess}
           />
         )}
       </div>

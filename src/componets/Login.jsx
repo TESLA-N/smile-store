@@ -23,7 +23,8 @@ const Login = ({ onClose, onSwitch, onSuccess }) => {
 
       if (res.ok) {
         localStorage.setItem("token", data.token);
-                alert( "login done");
+onSuccess(); // ✅ tells AuthModal to call refreshUser and close modal
+
 
         // onSuccess();
          // ✅ Close the modal

@@ -10,7 +10,8 @@ import HomePage from "./pages/Homepage.jsx";
 // import HomePage from "./pages/Homepage.jsx";
 import ProductPage from "./pages/Productpage.jsx"; // your product search/display page
 import ViewPage from "./pages/ProductView.jsx";
-import CartPa from "./pages/Cartpage.jsx";
+// import CartPa from "./pages/Cartpage.jsx";
+import { Cartppage } from "./pages/Cartppage.jsx";
 const App = () => {
   return (
     <Router>
@@ -20,7 +21,7 @@ const App = () => {
           <Route path="products" element={<ProductPage />} />
           {/* add more routes as needed */}
           <Route path="/product/view/:id" element={<ViewPage />} />
-          <Route path="cart" element={<CartPa/>}/>
+          <Route path="cart" element={<Cartppage/>}/>
 
 
 

@@ -32,7 +32,9 @@ const SignUp = ({ onClose, onSwitch, onSuccess }) => {
       const data = await res.json();
       if (res.ok) {
         setLoading(false);
-        alert("signed up")
+     localStorage.setItem("token", data.token);
+
+       
         onSuccess();
       } else {
         alert(data.message || "Registration failed");
