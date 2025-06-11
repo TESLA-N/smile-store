@@ -1,6 +1,4 @@
 
-// aboev is my productroutes.js
-// controllers/fuzzySController.js
 
 import Product from "../models/productModel.js";
 import Fuse from "fuse.js";

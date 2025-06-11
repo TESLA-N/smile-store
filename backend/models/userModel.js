@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+// import upload from "../middlewares/cloudinaryStorage.js";
+
 
 const userSchema = new mongoose.Schema(
   {
@@ -16,6 +18,9 @@ const userSchema = new mongoose.Schema(
       required: true,
      
     },
+     profilePic: { 
+      type: String, 
+      default: "" },
     wishlist: [
       {
         productId: {

@@ -28,21 +28,28 @@ function Navbar() {
   }, [isSidebarVisible]);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        console.log("Fetching user profile...");
-        const { data } = await axios.get("http://localhost:4000/api/profile", {
-          withCredentials: true,
-        });
-        console.log("User profile fetched:", data);
-        setUser(data);
-      } catch (err) {
-        console.log("Not logged in:", err.response?.status);
-        setUser(null);
-      }
-    };
-    fetchProfile();
-  }, []);
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      // console.log("Fetching user profile with token...");
+      const { data } = await axios.get("http://localhost:4000/api/users/profile", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      console.log("User profile fetched:", data);
+      setUser(data);
+    } catch (err) {
+      console.log("Not logged in:", err.response?.status);
+      setUser(null);
+    }
+  };
+
+  fetchProfile();
+}, []);
+
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -61,10 +68,29 @@ function Navbar() {
       navigate("/products");
     }
   };
+ const dummyAddresses = [
+    { id: 1, line: "1234 Main Street, Delhi" },
+    { id: 2, line: "5678 MG Road, Bangalore" },
+    { id: 3, line: "9101 Park Avenue, Mumbai" },
+  ];
+
+  const [selectedAddressId, setSelectedAddressId] = useState(1);
+  const [editedAddress, setEditedAddress] = useState(dummyAddresses[0].line);
+
+  const handleAddressChange = (e) => {
+    const newId = parseInt(e.target.value);
+    setSelectedAddressId(newId);
+    const selected = dummyAddresses.find((addr) => addr.id === newId);
+    setEditedAddress(selected.line);
+  };
+
+  const handleInputChange = (e) => {
+    setEditedAddress(e.target.value);
+  };
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:4000/api/logout", {}, { withCredentials: true });
+      await axios.post("http://localhost:4000/api/users/logout", {} );
       setUser(null);
       setShowProfileMenu(false);
       navigate("/");
@@ -93,19 +119,25 @@ function Navbar() {
   };
 
   // Function to refresh user data after login/signup
-  const refreshUser = async () => {
-    try {
-      console.log("Refreshing user profile...");
-      const { data } = await axios.get("http://localhost:4000/api/profile", {
-        withCredentials: true,
-      });
-      console.log("User profile refreshed:", data);
-      setUser(data);
-    } catch (err) {
-      console.log("Failed to refresh user profile:", err);
-      setUser(null);
-    }
-  };
+const refreshUser = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    console.log("Refreshing user profile...");
+    const { data } = await axios.get("http://localhost:4000/api/users/profile", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("User profile refreshed:", data);
+    setUser(data);
+  } catch (err) {
+    console.log("Failed to refresh user profile:", err);
+    setUser(null);
+  }
+};
+
 
   return (
     <div className="bg-gray-800 text-white shadow-lg">
@@ -119,30 +151,35 @@ function Navbar() {
           />
         </Link>
 
-        <div className="flex flex-col text-sm cursor-pointer" onClick={handleAddressClick}>
-          <div className="flex items-center text-sm">
-            <img src="/icons8-location-50.png" alt="Location" className="w-6 h-6 mr-1" />
-            <span className="font-semibold">Deliver to</span>
-          </div>
-          <span>{user?.defaultAddress?.line || "1234 Your Address"}</span>
-        </div>
+         <div className="flex flex-col text-sm cursor-pointer space-y-1">
+      <div className="flex items-center text-sm">
+        <img
+          src="/icons8-location-50.png"
+          alt="Location"
+          className="w-6 h-6 mr-1"
+        />
+        <span className="font-semibold">Deliver to</span>
+      </div>
+
+      {/* Dropdown Selector */}
+      <select
+        className="border rounded px-2 py-1 text-black"
+        value={selectedAddressId}
+        onChange={handleAddressChange}
+      >
+        {dummyAddresses.map((addr) => (
+          <option key={addr.id} value={addr.id}>
+            {addr.line}
+          </option>
+        ))}
+      </select>
+
+      {/* Editable Input Field */}
+      
+    </div>
 
         <div className="relative flex items-center flex-grow max-w-2xl mx-4">
-          {/* <select
-            className="bg-gray-700 text-white p-2 hover:bg-black rounded-l-lg h-full appearance-none pr-8"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
-          >
-            <option>All</option>
-            <option>Clothing</option>
-            <option>Electronics</option>
-            <option>Footwear</option>
-            <option>Furniture</option>
-            <option>Beauty</option>
-            <option>Sports</option>
-            <option>Groceries</option>
-            <option>Accessories</option>
-          </select> */}
+          
           <div className="relative inline-block">
   <select
     className="bg-gray-700 text-white p-2 hover:bg-black rounded-l-lg h-full appearance-none pr-8"
@@ -201,52 +238,53 @@ function Navbar() {
           <ShoppingCartIcon className="text-white" />
         </button>
 
-        {user ? (
-          <div className="relative profile-menu">
-            {/* <Avatar
-              alt={user.name}
-              src={user.profilePic || "/default-avatar.png"}
-              className="ml-4 cursor-pointer"
-              onClick={() => setShowProfileMenu(!showProfileMenu)}
-            /> */}
-            <img
-  src={user.profilePic || "/default-avatar.png"}
-  alt={user.name}
-  className="w-10 h-10 rounded-full ml-4 cursor-pointer"
-  onClick={() => setShowProfileMenu(!showProfileMenu)}
-/>
+       {user ? (
+  <div className="relative">
+    <img
+      src={user.profilePic || "/default-avatar.png"}
+      alt={user.name}
+      className="w-10 h-10 rounded-full ml-4 cursor-pointer border border-white"
+      onClick={() => setShowProfileMenu(!showProfileMenu)}
+    />
 
-            {showProfileMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-50">
-                <button
-                  onClick={() => navigate("/profile/edit")}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                >
-                  ✏️ Edit Profile
-                </button>
-                <button
-                  onClick={() => navigate("/wishlist")}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                >
-                  ❤️ Wishlist
-                </button>
-                <button
-                  onClick={handleLogout}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-100"
-                >
-                  🚪 Logout
-                </button>
-              </div>
-            )}
-          </div>
-        ) : (
-          <button
-            onClick={handleLoginClick}
-            className="bg-blue-500 p-2 rounded-md hover:bg-blue-600 ml-4"
-          >
-            Login
-          </button>
-        )}
+    {showProfileMenu && (
+      <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-50">
+        <button
+          onClick={() => {
+            setShowProfileMenu(false);
+            navigate("/profile/edit");
+          }}
+          className="w-full text-left px-4 py-2 hover:bg-gray-100"
+        >
+          ✏️ Edit Profile
+        </button>
+        <button
+          onClick={() => {
+            setShowProfileMenu(false);
+            navigate("/wishlist");
+          }}
+          className="w-full text-left px-4 py-2 hover:bg-gray-100"
+        >
+          ❤️ Wishlist
+        </button>
+        <button
+          onClick={handleLogout}
+          className="w-full text-left px-4 py-2 hover:bg-gray-100"
+        >
+          🚪 Logout
+        </button>
+      </div>
+    )}
+  </div>
+) : (
+  <button
+    onClick={handleLoginClick}
+    className="bg-blue-500 p-2 rounded-md hover:bg-blue-600 ml-4 text-white"
+  >
+    Login
+  </button>
+)}
+
       </div>
 
       {/* Mobile Navbar */}

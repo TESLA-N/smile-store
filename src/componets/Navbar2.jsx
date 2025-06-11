@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "./sidebar";
 
 const Navbar2 = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isSidebarVisible) {
@@ -14,6 +16,32 @@ const Navbar2 = () => {
 
   const toggleSidebar = () => {
     setIsSidebarVisible(!isSidebarVisible);
+  };
+
+  // Brand names you want to route with `brand=...`
+  const brands = ["Apple", "Rolex", "Furniture Co."];
+
+  // All navbar items (brands + categories)
+  const navItems = [
+    "Apple",
+    "New Arrivals",
+    "Accessories",
+    "Seasonal Specials",
+    "Home",
+    "Rolex",
+    "Furniture Co.",
+    "Groceries",
+    "Sports",
+    "Cosmetics"
+  ];
+
+  // Handle click: decide brand or category
+  const handleItemClick = (item) => {
+    const isBrand = brands.includes(item);
+    const query = isBrand
+      ? `brand=${encodeURIComponent(item)}`
+      : `category=${encodeURIComponent(item)}`;
+    navigate(`/products?${query}`);
   };
 
   return (
@@ -32,20 +60,11 @@ const Navbar2 = () => {
         {/* Navbar Links */}
         <div className="flex items-center justify-between w-full text-sm">
           <div className="flex items-center justify-between gap-5">
-            {[
-              "Friends",
-              "New Arrivals",
-              "Merchandise",
-              "Seasonal Specials",
-              "Home & Living",
-              "Accessories",
-              "Posters & Art",
-              "Collectibles",
-              "Gifts",
-            ].map((item, index) => (
+            {navItems.map((item, index) => (
               <span
                 key={index}
                 className="cursor-pointer px-4 py-2 hover:outline hover:outline-1 hover:outline-white transition-all text-center"
+                onClick={() => handleItemClick(item)}
               >
                 {item}
               </span>
@@ -59,7 +78,6 @@ const Navbar2 = () => {
         <div className="flex items-center space-x-2 p-2 rounded-md shadow-md">
           {/* Delivery Icon */}
           <img src="icons8-location-50.png" alt="Delivery Icon" className="w-6 h-6" />
-
           {/* Address */}
           <span className="text-white text-sm font-medium">
             Delivery to: 123 Main Street, Springfield
@@ -70,7 +88,7 @@ const Navbar2 = () => {
       {/* Sidebar and Overlay */}
       {isSidebarVisible && (
         <div className="fixed inset-0 flex z-50">
-          {/* Clickable Overlay to close sidebar */}
+          {/* Clickable Overlay */}
           <div
             className="fixed inset-0 bg-black bg-opacity-50"
             onClick={toggleSidebar}
@@ -81,7 +99,7 @@ const Navbar2 = () => {
             <Sidebar />
           </div>
 
-          {/* Close Button (Outside Sidebar) */}
+          {/* Close Button */}
           <button
             onClick={toggleSidebar}
             className="absolute top-4 left-[290px] text-white text-2xl p-2 rounded hover:bg-gray-700 transition"

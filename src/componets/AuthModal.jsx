@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import LoginTab from "./Login";
-import SignInTab from "./sign";
+import LoginTab from "./Login.jsx";
+import SignInTab from "./SignUp.jsx";
 
 const AuthModal = ({ onClose, refreshUser }) => {
   const [isLogin, setIsLogin] = useState(true);

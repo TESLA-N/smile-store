@@ -2,6 +2,7 @@ import express from "express";
 // import protect from "../middleware/authmiddleware.js";
 import { protect } from "../middleware/authmiddleware.js";
 import product from "../models/productModel.js"
+import upload from "../middleware/cloudinaryStorage.js";
 
 
 import {
@@ -13,6 +14,7 @@ import {
    getUserWishlist,
 addToWishlist,
 removeFromWishlist,
+logoutUser
 
  
 } from "../controllers/userController.js";
@@ -23,12 +25,18 @@ const userRouter = express.Router();
 // getCart,
 // updateCart,
 // getUserOrders
-userRouter.post("/register", registerUser);
+// userRouter.post("/register", registerUser);
+userRouter.post("/register", upload.single("profilePic"), registerUser);
+
 userRouter.post("/login", loginUser);
+
 
 // Profile
 userRouter.get("/profile", protect, getUserProfile);
-userRouter.put("/profile/update", protect, updateUserProfile);
+userRouter.put("/profile/update", protect, upload.single("profilePic"), updateUserProfile);
+userRouter.post("/logout",  logoutUser);
+
+// userRouter.put("/profile/update", protect, updateUserProfile);
 userRouter.put("/password/update", protect, updatePassword);
 
 // // Wishlist
