@@ -31,7 +31,7 @@ function Navbar() {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
-        const { data } = await axios.get("http://localhost:4000/api/users/profile", {
+        const { data } = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/users/profile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(data);
@@ -100,7 +100,7 @@ function Navbar() {
     try {
       const token = localStorage.getItem("token");
       if (!token) return;
-      const { data } = await axios.get("http://localhost:4000/api/users/profile", {
+      const { data } = await axios.get(`${process.env.REACT_APP_API_BASE_URL}/api/users/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(data);
@@ -111,7 +111,7 @@ function Navbar() {
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:4000/api/users/logout", {});
+      await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/users/logout`, {});
       localStorage.removeItem("token"); // ✅ important fix
       setUser(null);
       setShowProfileMenu(false);

@@ -11,7 +11,8 @@ const Login = ({ onClose, onSwitch, onSuccess }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:4000/api/users/login", {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users/login`, 
+ {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

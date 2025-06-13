@@ -23,7 +23,8 @@ const SignUp = ({ onClose, onSwitch, onSuccess }) => {
       formData.append("password", form.password);
       if (profilePic) formData.append("profilePic", profilePic);
 
-      const res = await fetch("http://localhost:4000/api/users/register", {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/
+api/users/register`, {
         method: "POST",
         credentials: "include",
         body: formData,

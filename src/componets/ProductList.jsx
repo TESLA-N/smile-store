@@ -16,7 +16,7 @@ const ProductList = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:4000/api/users/wishlist/add", {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/users/wishlist/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +47,7 @@ const ProductList = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:4000/api/cart/add", {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/cart/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -81,7 +81,7 @@ const ProductList = () => {
       if (query) apiParams.append("q", query);
       if (category) apiParams.append("category", category);
 
-      const res = await fetch(`http://localhost:4000/api/products/search?${apiParams.toString()}`);
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/products/search?${apiParams.toString()}`);
       const data = await res.json();
       setProducts(data);
       setVisibleCount(5);

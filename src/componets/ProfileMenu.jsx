@@ -4,7 +4,7 @@ const ProfileMenu = ({ user, setUser }) => {
   const [open, setOpen] = useState(false);
 
   const logout = async () => {
-    await fetch("http://localhost:4000/api/users/logout", {
+    await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users/logout`, {
       method: "POST",
       credentials: "include",
     });

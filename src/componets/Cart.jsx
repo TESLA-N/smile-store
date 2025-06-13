@@ -11,7 +11,7 @@ const CartPage = () => {
 
   const fetchCart = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/cart', {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/cart`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -26,7 +26,7 @@ const CartPage = () => {
 
   const handleQuantity = async (productId, type) => {
     try {
-      await fetch(`http://localhost:4000/api/cart/${type}`, {
+      await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/cart/${type}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -42,7 +42,7 @@ const CartPage = () => {
 
   const handleRemove = async (productId) => {
     try {
-      await fetch(`http://localhost:4000/api/cart/remove`, {
+      await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/cart/remove`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

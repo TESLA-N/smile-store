@@ -14,7 +14,7 @@ const WishlistPage = () => {
 
   const fetchWishlist = async () => {
     try {
-      const res = await fetch('http://localhost:4000/api/users/wishlist', {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users/wishlist`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
@@ -29,7 +29,7 @@ const WishlistPage = () => {
 
   const handleRemove = async (productId) => {
     try {
-      await fetch(`http://localhost:4000/api/users/wishlist/remove/${productId}`, {
+      await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users/wishlist/remove/${productId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',

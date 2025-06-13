@@ -10,7 +10,7 @@ const ProductView = () => {
 
   const fetchProduct = async () => {
     try {
-      const res = await fetch(`http://localhost:4000/api/products/${id}`);
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/products/${id}`);
       const data = await res.json();
       setProduct(data);
       setSelectedImage(data.thumbnail); // Default selected image
@@ -28,7 +28,7 @@ const handleAddToCart = async (productId) => {
     }
 
     try {
-      const res = await fetch("http://localhost:4000/api/cart/add", {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/cart/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
