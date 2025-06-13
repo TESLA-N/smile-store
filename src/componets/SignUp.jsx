@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const SignUp = ({ onClose, onSwitch, onSuccess }) => {
   const [form, setForm] = useState({ name: "", email: "", password: "" });
@@ -15,7 +16,7 @@ const SignUp = ({ onClose, onSwitch, onSuccess }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
       const formData = new FormData();
       formData.append("name", form.name);
@@ -23,8 +24,7 @@ const SignUp = ({ onClose, onSwitch, onSuccess }) => {
       formData.append("password", form.password);
       if (profilePic) formData.append("profilePic", profilePic);
 
-      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/
-api/users/register`, {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users/register`, {
         method: "POST",
         credentials: "include",
         body: formData,
@@ -32,17 +32,15 @@ api/users/register`, {
 
       const data = await res.json();
       if (res.ok) {
-        setLoading(false);
-     localStorage.setItem("token", data.token);
-
-       
+        localStorage.setItem("token", data.token);
         onSuccess();
       } else {
         alert(data.message || "Registration failed");
-        setLoading(false);
       }
     } catch (error) {
       console.error("Signup error:", error);
+      alert("Something went wrong.");
+    } finally {
       setLoading(false);
     }
   };
@@ -51,26 +49,7 @@ api/users/register`, {
     <>
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center">
-          <svg
-            className="animate-spin h-12 w-12 text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            />
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v4l3.536-3.536A9.953 9.953 0 0120 12h-4a6 6 0 00-6-6v4z"
-            />
-          </svg>
+          <CircularProgress style={{ color: "#2563eb" }} size={50} />
         </div>
       )}
 
@@ -142,6 +121,7 @@ api/users/register`, {
             <button
               type="submit"
               className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-md text-sm"
+              disabled={loading}
             >
               Sign Up
             </button>

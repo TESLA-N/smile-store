@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const Login = ({ onClose, onSwitch, onSuccess }) => {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -11,8 +12,7 @@ const Login = ({ onClose, onSwitch, onSuccess }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users/login`, 
- {
+      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -24,11 +24,7 @@ const Login = ({ onClose, onSwitch, onSuccess }) => {
 
       if (res.ok) {
         localStorage.setItem("token", data.token);
-onSuccess(); // ✅ tells AuthModal to call refreshUser and close modal
-
-
-        // onSuccess();
-         // ✅ Close the modal
+        onSuccess(); // call refreshUser and close modal
       } else {
         alert(data.message || "Login failed");
       }
@@ -36,7 +32,7 @@ onSuccess(); // ✅ tells AuthModal to call refreshUser and close modal
       console.error("Login error:", error);
       alert("Something went wrong.");
     } finally {
-      setLoading(false); // ✅ Stop the loader
+      setLoading(false);
     }
   };
 
@@ -45,26 +41,7 @@ onSuccess(); // ✅ tells AuthModal to call refreshUser and close modal
       {/* Full-screen loader */}
       {loading && (
         <div className="fixed inset-0 bg-black bg-opacity-50 z-[100] flex items-center justify-center">
-          <svg
-            className="animate-spin h-12 w-12 text-white"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v8H4z"
-            ></path>
-          </svg>
+          <CircularProgress style={{ color: '#2563eb' }} size={50} />
         </div>
       )}
 

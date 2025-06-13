@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const WishlistPage = () => {
   const [wishlistItems, setWishlistItems] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
@@ -14,6 +15,7 @@ const WishlistPage = () => {
 
   const fetchWishlist = async () => {
     try {
+      setLoading(true);
       const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users/wishlist`, {
         headers: {
           "Content-Type": "application/json",
@@ -24,6 +26,8 @@ const WishlistPage = () => {
       setWishlistItems(data.wishlistItems || []);
     } catch (error) {
       console.error('Failed to fetch wishlist:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,9 +56,13 @@ const WishlistPage = () => {
   }, [navigate, token]);
 
   return (
-    <section className="px-4 py-8 bg-gradient-to-br from-pink-100 to-yellow-100 min-h-screen">
+    <section className="px-4 py-8 bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen">
       <div className="max-w-6xl mx-auto">
-        {wishlistItems.length === 0 ? (
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+          </div>
+        ) : wishlistItems.length === 0 ? (
           <p className="text-center text-gray-600 text-lg">Your wishlist is empty.</p>
         ) : (
           <div className="flex flex-col gap-6">
@@ -80,7 +88,7 @@ const WishlistPage = () => {
                 </div>
 
                 {/* Content Section */}
-                <div className="flex flex-col justify-between p-4 w-full sm:w-2/3">
+                <div className="flex flex-col justify-between p-4 w-full sm:w-2/3 bg-zinc-100">
                   <div>
                     <h3 className="text-lg font-bold text-gray-800 truncate">
                       {item.product.title}
@@ -92,9 +100,11 @@ const WishlistPage = () => {
 
                   <div className="flex justify-between items-center pt-2">
                     <span className="text-green-700 font-semibold">
-                      ₹{item.product.price}
+                      ${item.product.price}
                     </span>
-                    <FavoriteIcon className="text-red-500" />
+                    <button className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">
+                      Order Now
+                    </button>
                     <DeleteIcon
                       className="cursor-pointer text-gray-600 hover:text-black"
                       onClick={() => handleRemove(item.product._id)}
