@@ -2,6 +2,20 @@ import mongoose from "mongoose";
 import Cart from "../models/cartModel.js";
 
 // Get cart by user
+// export const getCart = async (req, res) => {
+//   try {
+//     const userId = req.user._id;
+//     const cart = await Cart.findOne({ user: userId }).populate("items.productId");
+
+//     if (!cart) {
+//       return res.status(404).json({ message: "Cart not found" });
+//     }
+
+//     res.json(cart);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// };
 export const getCart = async (req, res) => {
   try {
     const userId = req.user._id;
@@ -11,11 +25,18 @@ export const getCart = async (req, res) => {
       return res.status(404).json({ message: "Cart not found" });
     }
 
-    res.json(cart);
+    // Transform cart items
+    const cartItems = cart.items.map((item) => ({
+      product: item.productId, // full product document after populate
+      quantity: item.quantity,
+    }));
+
+    res.json({ cartItems }); // ✅ This matches what frontend expects
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Add item to cart or increase quantity if exists
 export const addToCart = async (req, res) => {

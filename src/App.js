@@ -10,8 +10,11 @@ import HomePage from "./pages/Homepage.jsx";
 // import HomePage from "./pages/Homepage.jsx";
 import ProductPage from "./pages/Productpage.jsx"; // your product search/display page
 import ViewPage from "./pages/ProductView.jsx";
-// import CartPa from "./pages/Cartpage.jsx";
+
 import { Cartppage } from "./pages/Cartppage.jsx";
+import MywishPage from "./pages/Mywish.jsx";
+import Proedit from "./pages/Proedit.jsx";
+
 const App = () => {
   return (
     <Router>
@@ -22,6 +25,10 @@ const App = () => {
           {/* add more routes as needed */}
           <Route path="/product/view/:id" element={<ViewPage />} />
           <Route path="cart" element={<Cartppage/>}/>
+          {/* <Route path="wishlist" element={<WishPage/>}/> */}
+          <Route path="wishlist" element={<MywishPage/>}/>
+          <Route path="profile/edit" element={<Proedit/>}/>
+          
 
 
 

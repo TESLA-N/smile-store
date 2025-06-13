@@ -403,15 +403,34 @@ export const updatePassword = async (req, res) => {
 };
 
 // ✅ Wishlist - Get
+// export const getUserWishlist = async (req, res) => {
+//   try {
+//     const user = await userModel.findById(req.user._id).populate("wishlist.productId");
+//     if (!user) return res.status(404).json({ message: "User not found" });
+//     res.json(user.wishlist);
+//   } catch (error) {
+//     res.status(500).json({ message: "Error fetching wishlist", error: error.message });
+//   }
+// };
 export const getUserWishlist = async (req, res) => {
   try {
-    const user = await userModel.findById(req.user._id).populate("wishlist.productId");
+    const user = await userModel
+      .findById(req.user._id)
+      .populate("wishlist.productId");
+
     if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user.wishlist);
+
+    const wishlistItems = user.wishlist.map((item) => ({
+      product: item.productId, // populated product document
+      addedAt: item.addedAt,
+    }));
+
+    res.json({ wishlistItems }); // 🔥 matches frontend expectations
   } catch (error) {
     res.status(500).json({ message: "Error fetching wishlist", error: error.message });
   }
 };
+
 
 // ✅ Wishlist - Add
 export const addToWishlist = async (req, res) => {

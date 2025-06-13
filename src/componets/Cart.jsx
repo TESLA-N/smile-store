@@ -68,7 +68,7 @@ const CartPage = () => {
   return (
     <section className="px-4 py-8 bg-gradient-to-br from-blue-100 to-purple-100 min-h-screen">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Your Cart</h2>
+        {/* <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Your Cart</h2> */}
 
         {cartItems.length === 0 ? (
           <p className="text-center text-gray-600 text-lg">Your cart is empty.</p>
@@ -77,6 +77,7 @@ const CartPage = () => {
             {cartItems.map((item) => (
               <div
                 key={item._id}
+                
                 className="flex flex-col sm:flex-row bg-white rounded-xl shadow-md overflow-hidden w-full h-auto sm:h-[180px] lg:h-[150px]"
               >
                 {/* Image Section */}

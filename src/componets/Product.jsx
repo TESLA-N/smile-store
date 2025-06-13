@@ -20,7 +20,37 @@ const ProductView = () => {
       setLoading(false);
     }
   };
+const handleAddToCart = async (productId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login to add items to cart.");
+      return;
+    }
 
+    try {
+      const res = await fetch("http://localhost:4000/api/cart/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include auth token
+        },
+        body: JSON.stringify({
+          productId,
+          quantity: 1,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("Product added to cart!");
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Failed to add to cart:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  };
   useEffect(() => {
     fetchProduct();
   }, [id]);
@@ -90,7 +120,7 @@ const ProductView = () => {
           {/* Buttons */}
           <div className="mt-8 flex gap-4 flex-wrap">
             <button
-  // onClick={handleAddToCart}
+   onClick={() => handleAddToCart(product._id)}
   className="bg-blue-700 text-white px-4 py-2 rounded hover:bg-blue-800"
 >
   Add to Cart

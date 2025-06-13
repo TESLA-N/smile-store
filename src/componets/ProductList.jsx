@@ -8,6 +8,37 @@ const ProductList = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  const handleAddTowish = async (productId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Please login to add items to cart.");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:4000/api/users/wishlist/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // Include auth token
+        },
+        body: JSON.stringify({
+          productId,
+          quantity: 1,
+        }),
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        alert("Product added to wishlist!");
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Failed to add to wishlist:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  };
   const handleAddToCart = async (productId) => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -122,7 +153,7 @@ const ProductList = () => {
                 <FavoriteBorderIcon
                   className="text-pink-600 cursor-pointer"
                   fontSize="large"
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={()=>  handleAddTowish(product._id)}
                 />
               </div>
             </div>
