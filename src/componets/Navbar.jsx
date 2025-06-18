@@ -10,7 +10,9 @@ import Sidebar from "./sidebar";
 import AuthModal from "./AuthModal";
 import ProductList from "./ProductList";
 import CartPage from "./Cart";
-
+import EditIcon from '@mui/icons-material/Edit';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import LogoutIcon from '@mui/icons-material/Logout';
 function Navbar() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -202,15 +204,15 @@ function Navbar() {
               onClick={() => setShowProfileMenu(!showProfileMenu)}
             />
             {showProfileMenu && (
-              <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-50 profile-menu">
-                <button onClick={() => { setShowProfileMenu(false); navigate("/profile/edit"); }} className="w-full text-left px-4 py-2 hover:bg-gray-100">
-                  ✏️ Edit Profile
+              <div className="absolute right-0 mt-2 w-48 bg-gray-700 text-black rounded-md shadow-lg z-50 profile-menu">
+                <button onClick={() => { setShowProfileMenu(false); navigate("/profile/edit"); }} className="w-full text-left px-4 py-2 hover:bg-gray-600">
+                  <EditIcon className="text-white"/> Edit Profile
                 </button>
-                <button onClick={() => { setShowProfileMenu(false); navigate("/wishlist"); }} className="w-full text-left px-4 py-2 hover:bg-gray-100">
-                  ❤️ Wishlist
+                <button onClick={() => { setShowProfileMenu(false); navigate("/wishlist"); }} className="w-full text-left px-4 py-2 hover:bg-gray-600">
+                 <FavoriteBorderIcon className="text-white"/> Wishlist
                 </button>
-                <button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-gray-100">
-                  🚪 Logout
+                <button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-gray-600">
+                  <LogoutIcon className="text-white"/> Logout
                 </button>
               </div>
             )}
@@ -252,30 +254,30 @@ function Navbar() {
                   onClick={() => setShowProfileMenu(!showProfileMenu)}
                 />
                 {showProfileMenu && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg z-50">
+                  <div className="absolute right-0 mt-2 w-48  bg-gray-700 text-black rounded-md shadow-lg z-50">
                     <button
                       onClick={() => {
-                        navigate("/profile/edit");
+                        navigate("profile/edit");
                         setShowProfileMenu(false);
                       }}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-600"
                     >
-                      ✏️ Edit Profile
+                      <EditIcon className="text-white"/> Edit Profile
                     </button>
                     <button
                       onClick={() => {
                         navigate("/wishlist");
                         setShowProfileMenu(false);
                       }}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-600"
                     >
-                      ❤️ Wishlist
+                      <FavoriteBorderIcon className="text-white"/> Wishlist
                     </button>
                     <button
                       onClick={handleLogout}
-                      className="w-full text-left px-4 py-2 hover:bg-gray-100"
+                      className="w-full text-left px-4 py-2 hover:bg-gray-600"
                     >
-                      🚪 Logout
+                      <LogoutIcon className="text-white"/> Logout
                     </button>
                   </div>
                 )}

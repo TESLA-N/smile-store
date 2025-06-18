@@ -147,7 +147,8 @@ const CartPage = () => {
             </div>
 
             {/* Checkout Button */}
-            <div className="flex justify-center mt-10">
+            <div className="flex justify-center sm:justify-end mt-10">
+
               <button
                 className="bg-green-700 text-white px-8 py-3 rounded-xl hover:bg-green-800 text-lg shadow"
                 onClick={() => navigate("/checkout")}

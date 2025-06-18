@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 
 const SignUp = ({ onClose, onSwitch, onSuccess }) => {
-  const [form, setForm] = useState({ name: "", email: "", password: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    address: "", // added
+  });
+
   const [profilePic, setProfilePic] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -22,13 +28,17 @@ const SignUp = ({ onClose, onSwitch, onSuccess }) => {
       formData.append("name", form.name);
       formData.append("email", form.email);
       formData.append("password", form.password);
+      formData.append("address", form.address); // added
       if (profilePic) formData.append("profilePic", profilePic);
 
-      const res = await fetch(`${process.env.REACT_APP_API_BASE_URL}/api/users/register`, {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
+      const res = await fetch(
+        `${process.env.REACT_APP_API_BASE_URL}/api/users/register`,
+        {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        }
+      );
 
       const data = await res.json();
       if (res.ok) {
@@ -113,6 +123,14 @@ const SignUp = ({ onClose, onSwitch, onSuccess }) => {
               type="password"
               name="password"
               placeholder="Password"
+              required
+              onChange={handleChange}
+              className="w-full border border-gray-300 focus:border-blue-500 px-3 py-2 rounded-md text-gray-900 text-sm focus:outline-none"
+            />
+            <input
+              type="text"
+              name="address"
+              placeholder="Address"
               required
               onChange={handleChange}
               className="w-full border border-gray-300 focus:border-blue-500 px-3 py-2 rounded-md text-gray-900 text-sm focus:outline-none"

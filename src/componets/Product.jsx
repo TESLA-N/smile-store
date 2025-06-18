@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useNavigate } from "react-router-dom";
+
 
 const ProductView = () => {
   const { id } = useParams();
@@ -93,6 +95,13 @@ const ProductView = () => {
       setAddingToWish(false);
     }
   };
+  // Inside ProductView
+const navigate = useNavigate();
+
+const handleOrderNow = () => {
+  navigate("/checkout", { state: { product } });
+};
+
 
   useEffect(() => {
     fetchProduct();
@@ -171,9 +180,13 @@ const ProductView = () => {
               )}
             </button>
 
-            <button className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800">
-              Order Now
-            </button>
+            <button
+  onClick={handleOrderNow}
+  className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800"
+>
+  Order Now
+</button>
+
           </div>
 
           {/* Wishlist Icon */}
