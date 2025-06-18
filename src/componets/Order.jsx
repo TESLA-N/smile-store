@@ -17,10 +17,10 @@ const OrderPage = () => {
   const [loading, setLoading] = useState(true);
 
   const selectedAddress = {
-    name: "Nitish Kumar",
-    phone: "+91 9876543210",
+    name: "User",
+    phone: "+91 9XXXXXXXXX",
     line1: "123, Main Street",
-    line2: "Nihal Vihar, Delhi - 110041",
+    line2: "Delhi - 1100XX",
   };
 
   useEffect(() => {
